@@ -237,7 +237,7 @@ export default function Home() {
               {
                 img: '/Img/Portfolio4.png',
                 title: 'Website Online Learning',
-                desc: 'Trainity adalah situs belajar pemrograman gratis dimana proyek ini dibangun dengan tujuan membuat proses belajar pemrograman menjadi mudah, efisien, dan terjangkau bagi siapa saja.'
+                desc: 'Trainity adalah situs belajar pemrograman gratis dimana proyek ini dibangun untuk membuat proses belajar pemrograman menjadi mudah dan efisien.'
               }
             ].map((item, idx) => (
               <div className="PortfolioDis" key={idx}>

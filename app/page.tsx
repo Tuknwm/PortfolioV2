@@ -1,103 +1,294 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentSection, setCurrentSection] = useState('Home');
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id') || 'home';
+            setCurrentSection(id.charAt(0).toUpperCase() + id.slice(1));
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => sections.forEach((section) => observer.unobserve(section));
+  }, []);
+
+  const handleNavClick = (section: string) => {
+    setCurrentSection(section);
+    setMobileMenuOpen(false);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    alert('Telah terkirim!');
+    e.currentTarget.reset();
+  };
+
+  return (
+    <>
+      <header className={`header ${mobileMenuOpen ? 'active' : ''}`}>
+        <Link href="#home" className="Logo">Joe Nickson Lie</Link>
+        
+        <nav className="navbar">
+          <Link href="#home" className="Nav">Home</Link>
+          <Link href="#education" className="Nav">Education</Link>
+          <Link href="#services" className="Nav">Services</Link>
+          <Link href="#portfolio" className="Nav">Portfolio</Link>
+          <Link href="#contact" className="Nav">Contact</Link>
+        </nav>
+
+        <div className="MHeader">
+          <Link href="#home" className="Mlogo">Joe Nickson Lie</Link>
+          <div 
+            className={`MHMenu ${mobileMenuOpen ? 'active' : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <span className="MHNavbar">{currentSection}</span>
+            <i className='bx bx-chevron-down Micon'></i>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </header>
+
+      <div className={`MHNavBagi ${mobileMenuOpen ? 'active' : ''}`}>
+        <Link href="#home" className="MHButtonNav" onClick={() => handleNavClick('Home')}>Home</Link>
+        <Link href="#education" className="MHButtonNav" onClick={() => handleNavClick('Education')}>Education</Link>
+        <Link href="#services" className="MHButtonNav" onClick={() => handleNavClick('Services')}>Services</Link>
+        <Link href="#portfolio" className="MHButtonNav" onClick={() => handleNavClick('Portfolio')}>Portfolio</Link>
+        <Link href="#contact" className="MHButtonNav" onClick={() => handleNavClick('Contact')}>Contact</Link>
+      </div>
+
+      <section className="ContainerHome" id="home" data-aos="fade">
+        <div className="HomeBox">
+          <div className="JustDisableMr">
+            <h6>Hi All <span>It's Joe</span></h6>
+            <h5>I am an Designer<span></span></h5>
+            <p>ordinary people and nothing special, do what ever you want, i am more active in individual and L crowd if something make me interesting i will do it until end then cause i didnt know what iam gonna telling you all so i will add Lorem in here. Lorem ipsum, dolor...</p>
+            <div>
+              <p className="MyItem">My Item:</p>
+              <div className="ButtonMyItem" style={{ display: 'flex'}}>
+                <a target="_blank" className="Icon" style={{ fontSize: '10px' }}>My CV</a>
+                <a target="_blank" className="Icon">Hire Me</a>
+                <Link href="#contact" className="Icon">ContactMe</Link>
+              </div>
+            </div>
+            <button 
+              className="LebihLanjut" 
+              onClick={() => document.getElementById('education')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Lebih Lanjut
+            </button>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Image src="/Img/Me.jpg" alt="Profile" className="HomeImage" width={400} height={400} priority />
+          </div>
+        </div>
+      </section>
+
+      <section className="ContainerEducation" id="education" data-aos="fade">
+        <div className="EducationBox">
+          <div className="EducationText" style={{ width: 'auto' }}>
+            <h2>Education</h2>
+            <p style={{ display: 'flex', justifyContent: 'center' }}>My educational history. from acient till today</p>
+          </div>
+
+          <div className="EducationMe">
+            <div className="BoxMs">
+              <Image src="/Img/sd.png" alt="SD Logo" width={80} height={80} />
+              <div className="BoxText">
+                <h3>Sekolah Bunda Mulia/Widuri Indah II</h3>
+                <p>2012 - 2018</p>
+              </div>
+            </div>
+
+            <div className="BoxMs">
+              <Image src="/Img/smp.png" alt="SMP Logo" width={80} height={80} />
+              <div className="BoxText">
+                <h3>SMP Permata Bunda</h3>
+                <p>2018 - 2021</p>
+              </div>
+            </div>
+
+            <div className="BoxMs">
+              <Image src="/Img/smk.png" alt="SMK" width={80} height={80} />
+              <div className="BoxText">
+                <h3>SMK Pelita IV</h3>
+                <p>2021 - 2024</p>
+              </div>
+            </div>
+
+            <div className="BoxMs">
+              <Image src="/Img/untar.png" alt="untar" width={80} height={80} />
+              <div className="BoxText">
+                <h3>University Tarumanagara</h3>
+                <p>2024 - Present</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="ContainerEducation" id="services" data-aos="fade">
+        <div className="EducationBox">
+          <div className="EducationText">
+            <h2>Services</h2>
+            <p style={{ display: 'flex', justifyContent: 'center' }}>Beberapa skill yang sering saya gunakan.</p>
+          </div>
+          <div className="EducationCard">
+            {[
+              {
+                img: '/Img/sc1.png',
+                title: 'FrontEnd',
+                desc: 'Membangun tampilan website yang modern, responsif, dan user-friendly menggunakan HTML, CSS, dan Tailwind CSS.',
+                skills: ['/Img/html.png', '/Img/css.png', '/Img/twd.png']
+              },
+              {
+                img: '/Img/sc2.png',
+                title: 'Design | Editing',
+                desc: 'desain grafis serta video editing/animasi menggunakan Adobe Premiere Pro, Illustrator, dan After Effects.',
+                skills: ['/Img/adb.png', '/Img/pr.png', '/Img/ai.png', '/Img/ae.png']
+              },
+              {
+                img: '/Img/sc3.png',
+                title: '3D Design',
+                desc: 'Membuat model 3D atau desain dan Unity untuk kebutuhan game dan mempermudah desain grafis.',
+                skills: ['/Img/blender.png', '/Img/unity.png']
+              },
+              {
+                img: '/Img/sc4.jpg',
+                title: 'Pc/Laptop Maintenance',
+                desc: 'perawatan dan perbaikan PC atau laptop, mulai dari instalasi software, upgrade hardware, hingga troubleshooting.',
+                skills: ['/Img/pc1.png', '/Img/pc2.png', '/Img/pc3.png']
+              }
+            ].map((service, idx) => (
+              <div className="Card" key={idx}>
+                <Image src={service.img} alt="services" className="CardImg" width={400} height={300} />
+                <div className="Overlay"></div>
+                <div className="IsiDalamnya">
+                  <h2>{service.title}</h2>
+                  <p>{service.desc}</p>
+                  <div className="CardIcon">
+                    <div className="IconBar">
+                      {service.skills.map((skill, i) => (
+                        <img key={i} src={skill} alt="skill" className="DisplaySkill" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="ContainerEducation" id="portfolio" data-aos="fade">
+        <div className="EducationBox">
+          <div className="EducationText">
+            <h2>Portfolio</h2>
+            <p>Beberapa proyek terbaik yang pernah saya kerjakan, menampilkan kreativitas, desain, dan pengembangan web.</p>
+          </div>
+          <div className="PortfolioContent">
+            {[
+              {
+                img: '/Img/Portfolio1.png',
+                title: 'Website Game',
+                desc: 'Berupa game ringan yang bisa dimainkan diberbagai device dan mudah dipahami, game ini adalah sebuah menekan tombol dimana pemain hanya mengklik secepat mungkin dengan waktu yang terbatas.'
+              },
+              {
+                img: '/Img/Portfolio2.png',
+                title: 'Website Sekolah',
+                desc: 'Pembaruan website sekolah kami selepas adanya pembaruan gedung, dimana website kali ini dibuat lebih moderen dan tidak template yang biasa dapat ditemui di berbagai website sekolah.'
+              },
+              {
+                img: '/Img/Portfolio3.png',
+                title: 'Website Asuransi',
+                desc: 'Website asuransi dengan desain glassmorphism dan minimalist. pembuatan glassmorphism ini harus memiliki warna yang cocok dengaannya jika tidak walau terlihat baik tapi aslinya tidak'
+              },
+              {
+                img: '/Img/Portfolio4.png',
+                title: 'Website Online Learning',
+                desc: 'Trainity adalah situs belajar pemrograman gratis dimana proyek ini dibangun dengan tujuan membuat proses belajar pemrograman menjadi mudah, efisien, dan terjangkau bagi siapa saja.'
+              }
+            ].map((item, idx) => (
+              <div className="PortfolioDis" key={idx}>
+                <div className="Portfolioimg">
+                  <Image src={item.img} alt={item.title} width={600} height={400} />
+                </div>
+                <div className="PortfolioText">
+                  <h2>{item.title}</h2>
+                  <p>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="ContainerHome" id="contact" data-aos="fade">
+        <div className="HomeBoxC">
+          <div className="ContactBox">
+            <h2>Contact Me</h2>
+            <p>Anda dapat menghubungi saya melalui email atau sosial media di bawah ini. Saya akan membalas pesan Anda secepat mungkin. <br />Terima Kasih</p>
+            <form className="ContactForm" onSubmit={handleSubmit}>
+              <input type="text" placeholder="Your Name" required />
+              <input type="email" placeholder="Your Email" required />
+              <textarea rows={5} placeholder="Your Message" required></textarea>
+              <button type="submit">Send Message</button>
+            </form>
+          </div>
+          <div className="ContactMe">
+            {[
+              { icon: 'bxl-instagram', title: 'Instagram', handle: '@tuknwm' },
+              { icon: 'bxl-twitter', title: 'Twitter', handle: 'nahh' },
+              { icon: 'bxl-github', title: 'Github', handle: 'Tuknwm' },
+              { icon: 'bxl-whatsapp', title: 'Whatsapp', handle: 'Tuknwm' },
+              { icon: 'bxl-discord', title: 'Discord', handle: 'Tuknwm' }
+            ].map((contact, idx) => (
+              <div className="BoxMs" key={idx}>
+                <i className={`bx ${contact.icon}`}></i>
+                <div className="BoxText">
+                  <h3>{contact.title}</h3>
+                  <p>{contact.handle}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <footer className="Footer">
+        <p>&copy; All rights reserved.</p>
       </footer>
-    </div>
+    </>
   );
 }
